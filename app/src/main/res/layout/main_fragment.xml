@@ -9,7 +9,7 @@
 
         <import type="android.text.TextUtils" />
 
-        <variable/>..
+        <variable
             name="viewmodel"
             type="com.qytech.gst813test.ui.main.MainViewModel" />
 
@@ -56,6 +56,16 @@
             android:layout_marginTop="16dp"
             android:text="@string/uninstall_apk"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_vfd_test" />
+
+        <Button
+            android:id="@+id/btn_net_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/net_speed"
+            app:layout_constraintStart_toEndOf="@id/btn_uninstall_apk"
             app:layout_constraintTop_toBottomOf="@id/btn_vfd_test" />
 
         <LinearLayout

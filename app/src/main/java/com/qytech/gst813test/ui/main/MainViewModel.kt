@@ -10,10 +10,13 @@ import androidx.lifecycle.viewModelScope
 import com.qytech.gst813test.FileUtils
 import com.qytech.gst813test.Installer
 import com.qytech.gst813test.MyApplication
+import com.qytech.gst813test.ShellUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.regex.Pattern
+
 
 class MainViewModel : ViewModel() {
     companion object {
@@ -81,6 +84,17 @@ class MainViewModel : ViewModel() {
 
     fun vfdTest() {
         serialPortSWK2.outputStream.write(VFD_TEST.toByteArray())
+    }
+
+    fun netSpeedTest(): String? {
+        val result = ShellUtils.execCmd("/data/ethtool eth0", false).successMsg
+        return if (result.isNotBlank()) {
+            Pattern.compile("\\s+(Speed: .*?Mb/s)\\s+")
+                .matcher(result)
+                .takeIf { matcher ->
+                    matcher.find()
+                }?.group(1)
+        } else null
     }
 
     fun uninstall() {

@@ -4,4 +4,7 @@
     <string name="cash_drawer">Cash Drawer</string>
     <string name="vfd_test">VFD Test</string>
     <string name="uninstall_apk">uninstall apk</string>
+    <string name="usb_2_mount">usb 2.0 device mount</string>
+    <string name="usb_3_mount">usb 3.0 device mount</string>
+    <string name="net_speed">Net Speed Test</string>
 </resources>
