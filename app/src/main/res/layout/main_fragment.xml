@@ -5,7 +5,11 @@
 
     <data>
 
-        <variable
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+
+        <variable/>..
             name="viewmodel"
             type="com.qytech.gst813test.ui.main.MainViewModel" />
 
@@ -17,31 +21,61 @@
         android:layout_height="match_parent"
         tools:context=".ui.main.MainFragment">
 
-        <EditText
+        <!--<EditText
             android:id="@+id/et_input_message"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:onTextChanged="@{viewmodel::onTextChanged}"
+            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <Button
+            android:id="@+id/btn_cash_drawer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:onClick="@{()->viewmodel.cashDrawer()}"
+            android:text="@string/cash_drawer"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btn_write_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{()->viewmodel.writeSerial()}"
-            android:text="@string/send"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_input_message" />
-
-        <Button
-            android:id="@+id/btn_write_a"
+            android:id="@+id/btn_vfd_test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:onClick="@{()->viewmodel.writeSerialA()}"
-            android:text="@string/send_a"
-            app:layout_constraintStart_toEndOf="@id/btn_write_message"
-            app:layout_constraintTop_toBottomOf="@id/et_input_message" />
+            android:layout_marginTop="16dp"
+            android:onClick="@{()->viewmodel.vfdTest()}"
+            android:text="@string/vfd_test"
+            app:layout_constraintStart_toEndOf="@id/btn_cash_drawer"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_uninstall_apk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/uninstall_apk"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_vfd_test" />
+
+        <LinearLayout
+            android:id="@+id/ll_loading_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:visibility="@{TextUtils.isEmpty(viewmodel.uninstallStatus) ? View.GONE : View.VISIBLE}"
+            app:layout_constraintTop_toBottomOf="@id/btn_uninstall_apk">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="40dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.uninstallStatus}" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/message"

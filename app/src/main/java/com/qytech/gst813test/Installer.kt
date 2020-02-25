@@ -1,7 +1,12 @@
 package com.qytech.gst813test
 
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageInfo
+import android.content.pm.PackageInstaller
+import android.net.Uri
+import android.util.Log
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -11,9 +16,33 @@ import java.io.InputStreamReader
  * Description :
  * Version : V1.0.0
  */
-object PackageInstaller {
+object Installer {
+    const val TAG = "Installer"
 
-   val  uninstall_list = arrayListOf<String>("")
+    val UNINSTALL_LIST = arrayListOf(
+        "com.magicandroidapps.iperf",
+        "me.lam.notepad",
+        "com.roamingsoft.manager",
+        "net.mori.androsamba",
+        "android_serialport_api.sample",
+        "hibernate.v2.testyourandroid",
+        "com.eeti.android.egalaxsensortester",
+        "com.eeti.android.egalaxupdateauto",
+        "com.zmsoft.twoscreen",
+        "com.digitalpersona.uareu.UareUSampleJava",
+        "com.alcorlink.smartcard",
+        "com.posprinter.printdemo",
+        "com.qytech.gst813test"
+    )
+
+//    fun uninstallApks() {
+//        UNINSTALL_LIST.forEach { packageName ->
+//            uninstall(packageName)
+//            Log.d(TAG, "uninstallApp apk $packageName")
+//        }
+//    }
+
+
     /**
      * 静默安装App
      *
@@ -48,6 +77,22 @@ object PackageInstaller {
         }
         //如果含有“success”单词则认为安装成功
         return successMsg.toString().equals("success", ignoreCase = true)
+    }
+
+    fun uninstall(packageName: String) {
+        val intent = Intent()
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        val sender = PendingIntent.getActivity(MyApplication.context, 0, intent, 0)
+        val mPackageInstaller: PackageInstaller =
+            MyApplication.context.packageManager.packageInstaller
+        mPackageInstaller.uninstall(packageName, sender.intentSender) // 卸载APK
+        Log.d(TAG, "uninstall app $packageName")
+    }
+
+    fun uninstallIntent(packageName: String) {
+        val uri: Uri = Uri.fromParts("package", packageName, null)
+        val intent = Intent(Intent.ACTION_DELETE, uri)
+        MyApplication.context.startActivity(intent)
     }
 
     /**

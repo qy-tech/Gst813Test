@@ -1,5 +1,6 @@
 package com.qytech.gst813test.ui.main
 
+import android.content.Intent
 import android.serialport.SerialPort
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -7,6 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qytech.gst813test.FileUtils
+import com.qytech.gst813test.Installer
+import com.qytech.gst813test.MyApplication
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -16,15 +19,31 @@ class MainViewModel : ViewModel() {
     companion object {
         const val GPIO_VALUE_PATH = "/sys/class/gpio/gpio56/value"
         const val GPIO_DIRECTION_PATH = "/sys/class/gpio/gpio56/direction"
-        const val ENABLE = "enable"
-        const val DISABLE = "disable"
+        const val ENABLE = "Open"
+        const val DISABLE = "Close"
         const val TAG: String = "MainViewModel"
+        const val VFD_TEST = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        const val CASH_DRAWER = "0x55H"
     }
 
     private val _status = MutableLiveData("")
     private var message = ""
-    private val serialPort: SerialPort by lazy {
+
+    private val _uninstallStatus = MutableLiveData<String>()
+    val uninstallStatus: LiveData<String> = _uninstallStatus
+
+
+    // VFD test
+    private val serialPortSWK2: SerialPort by lazy {
         SerialPort.newBuilder("/dev/ttysWK2", 9600)
+            .parity(0)
+            .dataBits(8)
+            .stopBits(1)
+            .build()
+    }
+    // cash drawer
+    private val serialPorSWK1: SerialPort by lazy {
+        SerialPort.newBuilder("/dev/ttysWK1", 9600)
             .parity(0)
             .dataBits(8)
             .stopBits(1)
@@ -56,12 +75,35 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun writeSerial() {
-        serialPort.outputStream.write(message.toByteArray())
+    fun cashDrawer() {
+        serialPorSWK1.outputStream.write(CASH_DRAWER.toByteArray())
     }
 
-    fun writeSerialA() {
-        serialPort.outputStream.write("A".toByteArray())
+    fun vfdTest() {
+        serialPortSWK2.outputStream.write(VFD_TEST.toByteArray())
+    }
+
+    fun uninstall() {
+        viewModelScope.launch {
+            Installer.UNINSTALL_LIST.forEach { packageName ->
+                if (Installer.appExist(MyApplication.context, packageName)) {
+                    Installer.uninstall(packageName)
+                    _uninstallStatus.value = "uninstall $packageName ..."
+                    delay(1000L)
+                }
+            }
+        }.invokeOnCompletion {
+            _uninstallStatus.value = ""
+            //reboot()
+        }
+    }
+
+    private fun reboot() {
+        val intent = Intent(Intent.ACTION_REBOOT)
+        intent.putExtra("nowait", 1)
+        intent.putExtra("interval", 1)
+        intent.putExtra("window", 0)
+        MyApplication.context.sendBroadcast(intent)
     }
 
     fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -71,10 +113,10 @@ class MainViewModel : ViewModel() {
         }
     }
 
-
     override fun onCleared() {
         super.onCleared()
-        serialPort.close()
+        serialPortSWK2.close()
+        serialPorSWK1.close()
     }
 
 }

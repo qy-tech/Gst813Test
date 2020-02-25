@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.qytech.gst813test.databinding.MainFragmentBinding
@@ -32,6 +33,22 @@ class MainFragment : Fragment() {
         dataBinding.viewmodel = viewModel
         viewModel.setGpioIn()
         viewModel.updateCtsStatus()
+        dataBinding.btnUninstallApk.setOnClickListener {
+            uninstallApk()
+        }
+    }
+
+    private fun uninstallApk() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirm  uninstall")
+            .setMessage("Cannot be retrieved after uninstall,Whether confirm uninstall")
+            .setNegativeButton("Cancel") { dialog, which ->
+            }
+            .setPositiveButton("OK") { dialog, which ->
+                viewModel.uninstall()
+            }
+            .setCancelable(false)
+            .show()
     }
 
 }

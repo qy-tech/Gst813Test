@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">GST813Test</string>
     <string name="gpio_status">CTS Status: %s</string>
-    <string name="send">write</string>
-    <string name="send_a">Write A</string>
+    <string name="cash_drawer">Cash Drawer</string>
+    <string name="vfd_test">VFD Test</string>
+    <string name="uninstall_apk">uninstall apk</string>
 </resources>
