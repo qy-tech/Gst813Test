@@ -20,8 +20,10 @@ import java.util.regex.Pattern
 
 class MainViewModel : ViewModel() {
     companion object {
-        const val GPIO_VALUE_PATH = "/sys/class/gpio/gpio56/value"
-        const val GPIO_DIRECTION_PATH = "/sys/class/gpio/gpio56/direction"
+//        const val GPIO_VALUE_PATH = "/sys/class/gpio/gpio56/value"
+//        const val GPIO_DIRECTION_PATH = "/sys/class/gpio/gpio56/direction"
+        const val GPIO_VALUE_PATH = "/sys/class/gpio/gpio35/value"
+        const val GPIO_DIRECTION_PATH = "/sys/class/gpio/gpio35/direction"
         const val ENABLE = "Open"
         const val DISABLE = "Close"
         const val TAG: String = "MainViewModel"
@@ -87,7 +89,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun netSpeedTest(): String? {
-        val result = ShellUtils.execCmd("/data/ethtool eth0", false).successMsg
+        val result = ShellUtils.execCmd("ethtool eth0", false).successMsg
         return if (result.isNotBlank()) {
             Pattern.compile("\\s+(Speed: .*?Mb/s)\\s+")
                 .matcher(result)
